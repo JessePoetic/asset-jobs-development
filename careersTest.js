@@ -341,6 +341,11 @@ class Item extends React.Component {
           const JobModalHtml = document.createElement("div");
           JobModalHtml.innerHTML = item.content;
           const applySection = document.createElement("div");
+          const JobModalHeader = document.createElement("div");
+          JobModalHeader.innerHTML = `
+            <h1>${item.title}</h1>
+            <div class="location">Location: ${item.location.name}</div>
+          `;
 
           // const applySection =
           //   JobModalHtml.getElementsByClassName("apply")[0];
@@ -372,6 +377,7 @@ class Item extends React.Component {
           // }
 
           const wrapper = document.createElement("div");
+          wrapper.appendChild(JobModalHeader);
           wrapper.appendChild(JobModalHtml);
           wrapper.appendChild(applySection);
           const JobModalHtmlComplete = wrapper.innerHTML;
