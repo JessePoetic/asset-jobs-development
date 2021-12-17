@@ -357,6 +357,11 @@
                 const JobModalHtml = document.createElement("div");
                 JobModalHtml.innerHTML = item.content;
                 const applySection = document.createElement("div");
+                const JobModalHeader = document.createElement("div");
+                JobModalHeader.innerHTML = `
+                <h1>${item.title}</h1>
+                <div class="location">Location: ${item.location.name}</div>
+                `;
 
                 // const applySection =
                 //   JobModalHtml.getElementsByClassName("apply")[0];
@@ -388,10 +393,10 @@
                 // }
 
                 const wrapper = document.createElement("div");
+                wrapper.appendChild(JobModalHeader);
                 wrapper.appendChild(JobModalHtml);
                 wrapper.appendChild(applySection);
                 const JobModalHtmlComplete = wrapper.innerHTML;
-                console.log({ html: _.unescape(JobModalHtmlComplete) });
 
                 return (
                   <div className="job-card-wrapper" key={item.Id}>
@@ -504,7 +509,6 @@
               )
             )
           );
-          console.log({ cities });
 
           const types = _.sortBy(
             _.uniq(
@@ -515,8 +519,6 @@
               )
             )
           );
-
-          console.log({ types });
 
           this.setState({
             loading: false,
@@ -781,7 +783,6 @@
                     className="modal-content"
                     dangerouslySetInnerHTML={{ __html: _.unescape(modal) }}
                   ></div>
-                  <div className="apply"></div>
                 </div>
               </ReactModal>
               <Pagination

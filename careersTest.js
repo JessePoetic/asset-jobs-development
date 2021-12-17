@@ -753,7 +753,6 @@ class App extends React.Component {
               className="modal-content"
               dangerouslySetInnerHTML={{ __html: _.unescape(modal) }}
             ></div>
-            <div className="apply"></div>
           </div>
         </ReactModal>
         <Pagination
