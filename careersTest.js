@@ -472,10 +472,8 @@ class App extends React.Component {
 
   async componentDidMount() {
     const data = await this.fetchListings();
-    // console.log({ data });
     // this.allJobListings = _.flatten(data);
     this.allJobListings = data.data.jobs;
-    console.log(this.allJobListings);
     // const states = _.sortBy(
     //   _.uniq(
     //     this.allJobListings.map((jobListing) => jobListing.location.name)
@@ -491,7 +489,6 @@ class App extends React.Component {
         )
       )
     );
-    console.log({ cities });
 
     const types = _.sortBy(
       _.uniq(
@@ -501,8 +498,6 @@ class App extends React.Component {
         )
       )
     );
-
-    console.log({ types });
 
     this.setState({
       loading: false,
