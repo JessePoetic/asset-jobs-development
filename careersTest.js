@@ -751,7 +751,7 @@ class App extends React.Component {
             </button>
             <div
               className="modal-content"
-              dangerouslySetInnerHTML={{ __html: modal }}
+              dangerouslySetInnerHTML={{ __html: _.unescape(modal) }}
             ></div>
             <div className="apply"></div>
           </div>

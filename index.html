@@ -361,13 +361,13 @@
                 // const applySection =
                 //   JobModalHtml.getElementsByClassName("apply")[0];
                 const applyString = `
-                  <div class="apply-section-wrapper">
-                    <div class="apply-section-accepting">
-                        <div class="apply-section-accepting-title">Accepting applications until</div>
-                        <div>** Apply Until Time **--</div>
-                    </div>
-                    <a href=${item.absolute_url} target="_blank" class="apply-section-apply">Apply</a>
-                  </div>`;
+            <div class="apply-section-wrapper">
+              <div class="apply-section-accepting">
+                  <div class="apply-section-accepting-title">Accepting applications until</div>
+                  <div>** Apply Until Time **--</div>
+              </div>
+              <a href=${item.absolute_url} target="_blank" class="apply-section-apply">Apply</a>
+            </div>`;
                 applySection.innerHTML = applyString;
 
                 // if (communityText) {
@@ -391,6 +391,7 @@
                 wrapper.appendChild(JobModalHtml);
                 wrapper.appendChild(applySection);
                 const JobModalHtmlComplete = wrapper.innerHTML;
+                console.log({ html: _.unescape(JobModalHtmlComplete) });
 
                 return (
                   <div className="job-card-wrapper" key={item.Id}>
@@ -550,20 +551,25 @@
             //   return true;
             // });
 
-            const filteredByCities = filteredByState.filter(({ City }) => {
-              const cityNormalized = City.toLowerCase()
-                .trim()
-                .replace(/\b\w/g, (l) => _.capitalize(l));
+            const filteredByCities = this.allJobListings.filter(
+              ({ location }) => {
+                const cityNormalized = location.name
+                  .toLowerCase()
+                  .trim()
+                  .replace(/\b\w/g, (l) => _.capitalize(l));
 
-              if (selectedCities.length) {
-                return selectedCities.includes(cityNormalized);
+                if (selectedCities.length) {
+                  return selectedCities.includes(cityNormalized);
+                }
+
+                return true;
               }
-
-              return true;
-            });
+            );
 
             const filteredbyType = filteredByCities.filter(({ metadata }) => {
-              const typeNormalized = metadata.value;
+              const typeNormalized = metadata.find(
+                ({ name }) => name === "Careers Page Job Type"
+              ).value;
 
               if (selectedTypes.length) {
                 return selectedTypes.includes(typeNormalized);
@@ -661,7 +667,7 @@
           const { selectedTypes } = this.state;
           const newSelectedTypes = _.cloneDeep(selectedTypes);
 
-          if (checked && !newSelectedType.includes(value)) {
+          if (checked && !newSelectedTypes.includes(value)) {
             newSelectedTypes.push(value);
           }
 
@@ -742,7 +748,7 @@
             // states,
             cities,
             types,
-            selectedState,
+            // selectedState,
             selectedCities,
             selectedTypes,
             // showCorporate,
@@ -773,7 +779,7 @@
                   </button>
                   <div
                     className="modal-content"
-                    dangerouslySetInnerHTML={{ __html: modal }}
+                    dangerouslySetInnerHTML={{ __html: _.unescape(modal) }}
                   ></div>
                   <div className="apply"></div>
                 </div>
