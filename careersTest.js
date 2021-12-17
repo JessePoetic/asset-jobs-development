@@ -639,7 +639,7 @@ class App extends React.Component {
     const { selectedTypes } = this.state;
     const newSelectedTypes = _.cloneDeep(selectedTypes);
 
-    if (checked && !newSelectedType.includes(value)) {
+    if (checked && !newSelectedTypes.includes(value)) {
       newSelectedTypes.push(value);
     }
 
@@ -720,7 +720,7 @@ class App extends React.Component {
       // states,
       cities,
       types,
-      selectedState,
+      // selectedState,
       selectedCities,
       selectedTypes,
       // showCorporate,
