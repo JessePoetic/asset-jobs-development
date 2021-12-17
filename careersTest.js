@@ -545,7 +545,9 @@ class App extends React.Component {
       });
 
       const filteredbyType = filteredByCities.filter(({ metadata }) => {
-        const typeNormalized = metadata.value;
+        const typeNormalized = metadata.find(
+          ({ name }) => name === "Careers Page Job Type"
+        ).value;
 
         if (selectedTypes.length) {
           return selectedTypes.includes(typeNormalized);
