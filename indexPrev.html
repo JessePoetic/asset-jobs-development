@@ -121,17 +121,15 @@
         render() {
           const {
             cities,
-            types,
-            // states,
-            // setSelectedState,
+            states,
+            setSelectedState,
             setSelectedCities,
-            setSelectedTypes,
+            setSelectedType,
             setSearchTerm,
-            // showCorporate,
-            // showProperty,
+            showCorporate,
+            showProperty,
             searchTerm,
             selectedCities,
-            selectedTypes,
             loadingResults,
             loading,
           } = this.props;
@@ -174,6 +172,17 @@
                           </button>
                         )}
                       </div>
+                      <select
+                        id="state-select"
+                        name="state-select"
+                        className="select-field w-select"
+                        onChange={setSelectedState}
+                      >
+                        <option value="">All States</option>
+                        {states.map((state) => {
+                          return <option value={state}>{state}</option>;
+                        })}
+                      </select>
                     </form>
                   </div>
                 </div>
@@ -210,41 +219,87 @@
                     <div className="job-filter-section">
                       <div className="heading-6">Refine by job type</div>
                       <div className="filter-checkboxes w-form">
-                        {types.map((type) => {
-                          return (
-                            <label
-                              key={type}
-                              className="w-checkbox filter-checkbox-wrapper"
-                            >
-                              <div
-                                className={`w-checkbox-input w-checkbox-input--inputType-custom filter-checkbox ${
-                                  selectedTypes.includes(type)
-                                    ? "w--redirected-checked"
-                                    : ""
-                                }`}
-                              />
-                              <input
-                                type="checkbox"
-                                id={type}
-                                name={type}
-                                checked={selectedTypes.includes(type)}
-                                onChange={setSelectedTypes}
-                                value={type}
-                                style={{
-                                  opacity: 0,
-                                  position: "absolute",
-                                  zIndex: -1,
-                                }}
-                              />
-                              <span
-                                htmlFor={type}
-                                className="filter-checkbox-label w-form-label"
-                              >
-                                {type}
-                              </span>
-                            </label>
-                          );
-                        })}
+                        <label className="w-checkbox filter-checkbox-wrapper">
+                          <div
+                            className={`w-checkbox-input w-checkbox-input--inputType-custom filter-checkbox ${
+                              showCorporate && showProperty
+                                ? "w--redirected-checked"
+                                : ""
+                            }`}
+                          />
+                          <input
+                            type="checkbox"
+                            id="checkbox"
+                            name="checkbox"
+                            checked={showCorporate && showProperty}
+                            onChange={setSelectedType}
+                            value="all"
+                            style={{
+                              opacity: 0,
+                              position: "absolute",
+                              zIndex: -1,
+                            }}
+                          />
+                          <span className="filter-checkbox-label w-form-label">
+                            All
+                          </span>
+                        </label>
+                        <label className="w-checkbox filter-checkbox-wrapper">
+                          <div
+                            className={`w-checkbox-input w-checkbox-input--inputType-custom filter-checkbox ${
+                              showCorporate && !showProperty
+                                ? "w--redirected-checked"
+                                : ""
+                            }`}
+                          />
+                          <input
+                            type="checkbox"
+                            id="corporate"
+                            checked={showCorporate && !showProperty}
+                            onChange={setSelectedType}
+                            value="corporate"
+                            name="corporate"
+                            style={{
+                              opacity: 0,
+                              position: "absolute",
+                              zIndex: -1,
+                            }}
+                          />
+                          <span
+                            htmlFor="corporate"
+                            className="filter-checkbox-label w-form-label"
+                          >
+                            Corporate
+                          </span>
+                        </label>
+                        <label className="w-checkbox filter-checkbox-wrapper">
+                          <div
+                            className={`w-checkbox-input w-checkbox-input--inputType-custom filter-checkbox ${
+                              showProperty && !showCorporate
+                                ? "w--redirected-checked"
+                                : ""
+                            }`}
+                          />
+                          <input
+                            type="checkbox"
+                            id="property management"
+                            checked={showProperty && !showCorporate}
+                            onChange={setSelectedType}
+                            value="property"
+                            name="property-management"
+                            style={{
+                              opacity: 0,
+                              position: "absolute",
+                              zIndex: -1,
+                            }}
+                          />
+                          <span
+                            htmlFor="property management"
+                            className="filter-checkbox-label w-form-label"
+                          >
+                            Property
+                          </span>
+                        </label>
                       </div>
                     </div>
                     <div className="job-filter-section last-child">
@@ -327,69 +382,66 @@
           return (
             <React.Fragment>
               {data.map((item) => {
-                const description = item.content
-                  .slice(1032) // temporary - should use regex to get rid of introductory content
-                  .replace(/<[^>]+>/g, "")
-                  .replace(/; &nbsp;|&nbsp;/gi, "");
-                const city = item.location.name
-                  .toLowerCase()
+                const description = item.Description.replace(
+                  /<[^>]+>/g,
+                  ""
+                ).replace(/; &nbsp;|&nbsp;/gi, "");
+                const city = item.City.toLowerCase()
                   .trim()
                   .replace(/\b\w/g, (l) => _.capitalize(l));
-                const title = item.title
-                  .toLowerCase()
-                  .replace(/\b\w/g, (l) => _.capitalize(l));
-                // const applyUntilTime = moment(item.CloseDate).format(
-                //   "MMMM D, YYYY [at] H:mm [CST]"
-                // );
+                const title = item.Title.toLowerCase().replace(/\b\w/g, (l) =>
+                  _.capitalize(l)
+                );
+                const applyUntilTime = moment(item.CloseDate).format(
+                  "MMMM D, YYYY [at] H:mm [CST]"
+                );
 
-                // let communityText = "";
-                // const itemLocationPreComma = item.Location.split(", ")[0];
-                // const itemLocationPostComma = item.Location.split(", ")[1];
+                let communityText = "";
+                const itemLocationPreComma = item.Location.split(", ")[0];
+                const itemLocationPostComma = item.Location.split(", ")[1];
 
-                // if (
-                //   itemLocationPreComma !== item.City &&
-                //   itemLocationPostComma !== item.State
-                // ) {
-                //   communityText = item.Location.trim().substring(7);
-                // }
+                if (
+                  itemLocationPreComma !== item.City &&
+                  itemLocationPostComma !== item.State
+                ) {
+                  communityText = item.Location.trim().substring(7);
+                }
 
                 // Add apply section to LongDescription from asset API
                 const JobModalHtml = document.createElement("div");
-                JobModalHtml.innerHTML = item.content;
-                const applySection = document.createElement("div");
+                JobModalHtml.innerHTML = item.LongDescription;
 
-                // const applySection =
-                //   JobModalHtml.getElementsByClassName("apply")[0];
+                const applySection =
+                  JobModalHtml.getElementsByClassName("apply")[0];
                 const applyString = `
                   <div class="apply-section-wrapper">
                     <div class="apply-section-accepting">
                         <div class="apply-section-accepting-title">Accepting applications until</div>
-                        <div>** Apply Until Time **--</div>
+                        <div>${applyUntilTime}</div>
                     </div>
-                    <a href=${item.absolute_url} target="_blank" class="apply-section-apply">Apply</a>
+                    <a href=${item.ApplyUrl} target="_blank" class="apply-section-apply">Apply</a>
                   </div>`;
                 applySection.innerHTML = applyString;
 
-                // if (communityText) {
-                //   const detailSection =
-                //     JobModalHtml.getElementsByClassName("jobDetailPadding")[0];
-                //   const detailItems =
-                //     detailSection.getElementsByTagName("span")[0];
-                //   const communityLeft = document.createElement("b");
-                //   communityLeft.innerHTML = "Community:";
-                //   detailItems.insertBefore(
-                //     communityLeft,
-                //     detailItems.firstChild
-                //   );
-                //   communityLeft.insertAdjacentText(
-                //     "afterend",
-                //     ` ${communityText}`
-                //   );
-                // }
+                if (communityText) {
+                  const detailSection =
+                    JobModalHtml.getElementsByClassName("jobDetailPadding")[0];
+                  const detailItems =
+                    detailSection.getElementsByTagName("span")[0];
+                  const communityLeft = document.createElement("b");
+                  communityLeft.innerHTML = "Community:";
+                  detailItems.insertBefore(
+                    communityLeft,
+                    detailItems.firstChild
+                  );
+                  communityLeft.insertAdjacentText(
+                    "afterend",
+                    ` ${communityText}`
+                  );
+                }
 
                 const wrapper = document.createElement("div");
                 wrapper.appendChild(JobModalHtml);
-                wrapper.appendChild(applySection);
                 const JobModalHtmlComplete = wrapper.innerHTML;
 
                 return (
@@ -398,8 +450,8 @@
                       <div className="job-card-left-col">
                         <div className="job-card-position">{title}</div>
                         <div className="job-card-location">
-                          {/*communityText ? `${communityText}, ` : ""*/}
-                          {city}
+                          {communityText ? `${communityText}, ` : ""}
+                          {city}, {item.State}
                         </div>
                       </div>
                       <div className="job-card-right-col">
@@ -435,120 +487,142 @@
         allJobListings = [];
         state = {
           cities: [],
-          // states: [],
-          types: [],
+          states: [],
           loading: true,
-          // selectedState: null,
+          selectedState: null,
           selectedCities: [],
-          // showProperty: true,
-          // showCorporate: true,
-          selectedTypes: [],
+          showProperty: true,
+          showCorporate: true,
           searchTerm: "",
           loadingResults: false,
           jobListings: [],
           modal: null,
         };
 
-        // fetchListings = () => {
-        //   const baseUrl =
-        //     "https://setup.swbcpeosms.com/public/api/JobPosting/GetCareerPortalOpenRequisitions";
-
-        //   return Promise.all([
-        //     // Asset Corporate
-        //     axios
-        //       .get(`${baseUrl}?id=6f8fcc16-7bdb-4a82-b28f-6fd8e3b0e2c7`, {})
-        //       .then(({ data }) => {
-        //         const res = _.get(data, "ResultList", []);
-        //         return res.map((obj) => ({
-        //           ...obj,
-        //           Type: "corporate",
-        //         }));
-        //       }),
-        //     // ABRES Residential
-        //     axios
-        //       .get(`${baseUrl}?id=5f84122b-4544-412e-a81f-a4a2bd6da456`, {})
-        //       .then(({ data }) => {
-        //         const res = _.get(data, "ResultList", []);
-        //         return res.map((obj) => ({
-        //           ...obj,
-        //           Type: "property",
-        //         }));
-        //       }),
-        //   ]);
-        // };
         fetchListings = () => {
           const baseUrl =
-            "https://boards-api.greenhouse.io/v1/boards/assetliving/jobs?content=true";
-          return axios.get(`${baseUrl}`);
+            "https://setup.swbcpeosms.com/public/api/JobPosting/GetCareerPortalOpenRequisitions";
+
+          return Promise.all([
+            // Asset Residential
+            axios
+              .get(`${baseUrl}?id=ba2a034d-57c4-4b52-9ab0-c8247cd7e5ed`, {})
+              .then(({ data }) => {
+                const res = _.get(data, "ResultList", []);
+                return res.map((obj) => ({
+                  ...obj,
+                  Type: "property",
+                }));
+              }),
+            // Asset Corporate
+            axios
+              .get(`${baseUrl}?id=6f8fcc16-7bdb-4a82-b28f-6fd8e3b0e2c7`, {})
+              .then(({ data }) => {
+                const res = _.get(data, "ResultList", []);
+                return res.map((obj) => ({
+                  ...obj,
+                  Type: "corporate",
+                }));
+              }),
+            // ABRES Residential
+            axios
+              .get(`${baseUrl}?id=5f84122b-4544-412e-a81f-a4a2bd6da456`, {})
+              .then(({ data }) => {
+                const res = _.get(data, "ResultList", []);
+                return res.map((obj) => ({
+                  ...obj,
+                  Type: "property",
+                }));
+              }),
+            // Shelton Residential
+            axios
+              .get(`${baseUrl}?id=dbd73b24-6a77-40d3-8660-18bc932a28c6`, {})
+              .then(({ data }) => {
+                const res = _.get(data, "ResultList", []);
+                return res.map((obj) => ({
+                  ...obj,
+                  Type: "property",
+                }));
+              }),
+            // ABRES Corporate
+            axios
+              .get(`${baseUrl}?id=b361be71-34f2-478d-a14c-5df623c0086b`, {})
+              .then(({ data }) => {
+                const res = _.get(data, "ResultList", []);
+                return res.map((obj) => ({
+                  ...obj,
+                  Type: "corporate",
+                }));
+              }),
+            // Shelton Corporate
+            axios
+              .get(`${baseUrl}?id=71085fbf-a0c2-42b0-9923-eff62b48d38e`, {})
+              .then(({ data }) => {
+                const res = _.get(data, "ResultList", []);
+                return res.map((obj) => ({
+                  ...obj,
+                  Type: "corporate",
+                }));
+              }),
+            // Dallas West Residential
+            axios
+              .get(`${baseUrl}?id=febc91d1-934a-46fe-8395-2a4d3be6f086`, {})
+              .then(({ data }) => {
+                const res = _.get(data, "ResultList", []);
+                return res.map((obj) => ({
+                  ...obj,
+                  Type: "property",
+                }));
+              }),
+          ]);
         };
 
         async componentDidMount() {
           const data = await this.fetchListings();
-          // console.log({ data });
-          // this.allJobListings = _.flatten(data);
-          this.allJobListings = data.data.jobs;
-          console.log(this.allJobListings);
-          // const states = _.sortBy(
-          //   _.uniq(
-          //     this.allJobListings.map((jobListing) => jobListing.location.name)
-          //   )
-          // );
+          console.log({ data });
+          this.allJobListings = _.flatten(data);
+          const states = _.sortBy(
+            _.uniq(this.allJobListings.map(({ State }) => State))
+          );
           const cities = _.sortBy(
             _.uniq(
-              this.allJobListings.map(({ location }) =>
-                location.name
-                  .toLowerCase()
+              this.allJobListings.map(({ City }) =>
+                City.toLowerCase()
                   .trim()
                   .replace(/\b\w/g, (l) => _.capitalize(l))
               )
             )
           );
-          console.log({ cities });
-
-          const types = _.sortBy(
-            _.uniq(
-              this.allJobListings.map(
-                ({ metadata }) =>
-                  metadata.find(({ name }) => name === "Careers Page Job Type")
-                    .value
-              )
-            )
-          );
-
-          console.log({ types });
 
           this.setState({
             loading: false,
             jobListings: this.allJobListings,
-            // states,
+            states,
             cities,
-            types,
           });
         }
 
         async componentDidUpdate(prevProps, prevState) {
           const {
-            // selectedState,
+            selectedState,
             selectedCities,
-            selectedTypes,
-            // showProperty,
-            // showCorporate,
+            showProperty,
+            showCorporate,
             searchTerm,
           } = this.state;
           if (
-            // selectedState !== prevState.selectedState ||
-            // showProperty !== prevState.showProperty ||
-            // showCorporate !== prevState.showCorporate ||
+            selectedState !== prevState.selectedState ||
+            showProperty !== prevState.showProperty ||
+            showCorporate !== prevState.showCorporate ||
             searchTerm !== prevState.searchTerm ||
-            selectedTypes.length !== prevState.selectedTypes.length ||
             selectedCities.length !== prevState.selectedCities.length
           ) {
-            // const filteredByState = this.allJobListings.filter(({ State }) => {
-            //   if (selectedState) {
-            //     return State === selectedState;
-            //   }
-            //   return true;
-            // });
+            const filteredByState = this.allJobListings.filter(({ State }) => {
+              if (selectedState) {
+                return State === selectedState;
+              }
+              return true;
+            });
 
             const filteredByCities = filteredByState.filter(({ City }) => {
               const cityNormalized = City.toLowerCase()
@@ -562,28 +636,23 @@
               return true;
             });
 
-            const filteredbyType = filteredByCities.filter(({ metadata }) => {
-              const typeNormalized = metadata.value;
-
-              if (selectedTypes.length) {
-                return selectedTypes.includes(typeNormalized);
+            const filteredbyType = filteredByCities.filter(({ Type }) => {
+              if (showProperty && showCorporate) {
+                return true;
               }
-              // if (showProperty && showCorporate) {
-              //   return true;
-              // }
-              // if (!showProperty && showCorporate) {
-              //   return Type === "corporate";
-              // }
-              // if (showProperty && !showCorporate) {
-              //   return Type === "property";
-              // }
+              if (!showProperty && showCorporate) {
+                return Type === "corporate";
+              }
+              if (showProperty && !showCorporate) {
+                return Type === "property";
+              }
 
-              return true;
+              return false;
             });
 
             const filteredBySearchterm = _.filter(
               filteredbyType,
-              ({ location, title }) => {
+              ({ Title, City, State }) => {
                 const lowerCase = (text) => text.toLowerCase();
                 const regexFunc = (fieldValueSearch) =>
                   new RegExp(searchTerm.trim().toLowerCase()).test(
@@ -591,9 +660,9 @@
                   );
 
                 return (
-                  regexFunc(lowerCase(title)) ||
-                  regexFunc(lowerCase(location.name))
-                  // regexFunc(lowerCase(State))
+                  regexFunc(lowerCase(Title)) ||
+                  regexFunc(lowerCase(City)) ||
+                  regexFunc(lowerCase(State))
                 );
               }
             );
@@ -610,90 +679,74 @@
           }
         }
 
-        // setSelectedState = (event) => {
-        //   const selectedState = event.target.value;
+        setSelectedState = (event) => {
+          const selectedState = event.target.value;
 
-        //   if (selectedState) {
-        //     const filteredCities = this.allJobListings.reduce(
-        //       (prevResult, jobListing) => {
-        //         const { City, State } = jobListing;
-        //         const cityNormalized = City.toLowerCase()
-        //           .trim()
-        //           .replace(/\b\w/g, (l) => _.capitalize(l));
+          if (selectedState) {
+            const filteredCities = this.allJobListings.reduce(
+              (prevResult, jobListing) => {
+                const { City, State } = jobListing;
+                const cityNormalized = City.toLowerCase()
+                  .trim()
+                  .replace(/\b\w/g, (l) => _.capitalize(l));
 
-        //         if (State === selectedState) {
-        //           if (!prevResult.includes(cityNormalized)) {
-        //             prevResult.push(cityNormalized);
-        //           }
-        //         }
+                if (State === selectedState) {
+                  if (!prevResult.includes(cityNormalized)) {
+                    prevResult.push(cityNormalized);
+                  }
+                }
 
-        //         return prevResult;
-        //       },
-        //       []
-        //     );
+                return prevResult;
+              },
+              []
+            );
 
-        //     this.setState({
-        //       selectedState,
-        //       selectedCities: [],
-        //       cities: _.sortBy(filteredCities),
-        //     });
-        //   } else {
-        //     const cities = _.sortBy(
-        //       _.uniq(
-        //         this.allJobListings.map(({ City }) =>
-        //           City.toLowerCase()
-        //             .trim()
-        //             .replace(/\b\w/g, (l) => _.capitalize(l))
-        //         )
-        //       )
-        //     );
-        //     this.setState({
-        //       selectedState,
-        //       selectedCities: [],
-        //       cities,
-        //     });
-        //   }
-        // };
+            this.setState({
+              selectedState,
+              selectedCities: [],
+              cities: _.sortBy(filteredCities),
+            });
+          } else {
+            const cities = _.sortBy(
+              _.uniq(
+                this.allJobListings.map(({ City }) =>
+                  City.toLowerCase()
+                    .trim()
+                    .replace(/\b\w/g, (l) => _.capitalize(l))
+                )
+              )
+            );
+            this.setState({
+              selectedState,
+              selectedCities: [],
+              cities,
+            });
+          }
+        };
 
         setSelectedType = (event) => {
           const { value, checked } = event.target;
 
-          const { selectedTypes } = this.state;
-          const newSelectedTypes = _.cloneDeep(selectedTypes);
-
-          if (checked && !newSelectedType.includes(value)) {
-            newSelectedTypes.push(value);
+          if (value === "all") {
+            this.setState({
+              showProperty: checked,
+              showCorporate: checked,
+            });
           }
 
-          if (!checked && newSelectedTypes.includes(value)) {
-            const indexOfItem = newSelectedTypes.indexOf(value);
-            newSelectedTypes.splice(indexOfItem, 1);
+          if (value === "property") {
+            this.setState({
+              showProperty: true,
+              showCorporate: !checked,
+            });
           }
 
-          this.setState({
-            selectedTypes: newSelectedTypes,
-          });
-
-          // if (value === "all") {
-          //   this.setState({
-          //     showProperty: checked,
-          //     showCorporate: checked,
-          //   });
-          // }
-
-          // if (value === "property") {
-          //   this.setState({
-          //     showProperty: true,
-          //     showCorporate: !checked,
-          //   });
-          // }
-
-          // if (value === "corporate") {
-          //   this.setState({
-          //     showCorporate: true,
-          //     showProperty: !checked,
-          //   });
-          // }
+          if (value === "corporate") {
+            this.setState({
+              showCorporate: true,
+              showProperty: !checked,
+            });
+          }
         };
 
         setSelectedCities = (event) => {
@@ -739,14 +792,12 @@
           const {
             loading,
             jobListings,
-            // states,
+            states,
             cities,
-            types,
             selectedState,
             selectedCities,
-            selectedTypes,
-            // showCorporate,
-            // showProperty,
+            showCorporate,
+            showProperty,
             searchTerm,
             loadingResults,
             modal,
@@ -775,25 +826,22 @@
                     className="modal-content"
                     dangerouslySetInnerHTML={{ __html: modal }}
                   ></div>
-                  <div className="apply"></div>
                 </div>
               </ReactModal>
               <Pagination
                 data={jobListings}
-                // states={states}
+                states={states}
                 cities={cities}
-                types={types}
                 pageSize={20}
                 startingPage={1}
                 selectedCities={selectedCities}
                 setSelectedCities={this.setSelectedCities}
-                // selectedState={selectedState}
-                // setSelectedState={this.setSelectedState}
-                selectedTypes={selectedTypes}
-                setSelectedTypes={this.setSelectedTypes}
+                selectedState={selectedState}
+                setSelectedState={this.setSelectedState}
+                setSelectedType={this.setSelectedType}
                 setSearchTerm={this.setSearchTerm}
-                // showProperty={showProperty}
-                // showCorporate={showCorporate}
+                showProperty={showProperty}
+                showCorporate={showCorporate}
                 searchTerm={searchTerm}
                 loadingResults={loadingResults}
                 loading={loading}
