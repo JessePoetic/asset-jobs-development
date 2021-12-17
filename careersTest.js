@@ -531,8 +531,9 @@ class App extends React.Component {
       //   return true;
       // });
 
-      const filteredByCities = filteredByState.filter(({ City }) => {
-        const cityNormalized = City.toLowerCase()
+      const filteredByCities = this.allJobListings.filter(({ location }) => {
+        const cityNormalized = location.name
+          .toLowerCase()
           .trim()
           .replace(/\b\w/g, (l) => _.capitalize(l));
 
