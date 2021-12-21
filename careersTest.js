@@ -234,7 +234,7 @@ class Pagination extends React.Component {
                 </div>
               </div>
               <div className="job-filter-section last-child">
-                <div className="heading-6">Refine by location</div>
+                <div className="heading-6">Refine by city</div>
                 <div className="filter-checkboxes w-form">
                   {cities.map((city) => {
                     return (
