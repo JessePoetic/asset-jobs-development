@@ -315,10 +315,10 @@ class Item extends React.Component {
             .slice(1032) // temporary - should use regex to get rid of introductory content
             .replace(/<[^>]+>/g, "")
             .replace(/; &nbsp;|&nbsp;/gi, "");
-          const city = item.location.name
-            .toLowerCase()
-            .trim()
-            .replace(/\b\w/g, (l) => _.capitalize(l));
+          const city = item.location.name;
+          // .toLowerCase()
+          // .trim()
+          // .replace(/\b\w/g, (l) => _.capitalize(l));
           const title = item.title
             .toLowerCase()
             .replace(/\b\w/g, (l) => _.capitalize(l));
@@ -349,13 +349,14 @@ class Item extends React.Component {
 
           // const applySection =
           //   JobModalHtml.getElementsByClassName("apply")[0];
+          const applyUrl = item.absolute_url + "#app";
           const applyString = `
             <div class="apply-section-wrapper">
               <div class="apply-section-accepting">
                   <div class="apply-section-accepting-title">Accepting applications until</div>
                   <div>** Apply Until Time **--</div>
               </div>
-              <a href=${item.absolute_url} target="_blank" class="apply-section-apply">Apply</a>
+              <a href=${applyUrl} target="_blank" class="apply-section-apply">Apply</a>
             </div>`;
           applySection.innerHTML = applyString;
 
@@ -481,11 +482,11 @@ class App extends React.Component {
     // );
     const cities = _.sortBy(
       _.uniq(
-        this.allJobListings.map(({ location }) =>
-          location.name
-            .toLowerCase()
-            .trim()
-            .replace(/\b\w/g, (l) => _.capitalize(l))
+        this.allJobListings.map(
+          ({ location }) => location.name
+          // .toLowerCase()
+          // .trim()
+          // .replace(/\b\w/g, (l) => _.capitalize(l))
         )
       )
     );
@@ -533,10 +534,10 @@ class App extends React.Component {
       // });
 
       const filteredByCities = this.allJobListings.filter(({ location }) => {
-        const cityNormalized = location.name
-          .toLowerCase()
-          .trim()
-          .replace(/\b\w/g, (l) => _.capitalize(l));
+        const cityNormalized = location.name;
+        // .toLowerCase()
+        // .trim()
+        // .replace(/\b\w/g, (l) => _.capitalize(l));
 
         if (selectedCities.length) {
           return selectedCities.includes(cityNormalized);
