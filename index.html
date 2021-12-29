@@ -327,10 +327,17 @@
           return (
             <React.Fragment>
               {data.map((item) => {
-                const description = item.content
-                  .slice(1032) // temporary - should use regex to get rid of introductory content
+                const content = _.unescape(item.content);
+                const index = content.indexOf('</strong>')
+                const index2 = content.indexOf('</strong>', index + 1)
+                const start = content.indexOf('<p>', index2 + 1);
+                const end = content.indexOf('</p>', start)
+                // Might be better to use regex
+                const description = content
+                  .slice(start, end)
                   .replace(/<[^>]+>/g, "")
                   .replace(/; &nbsp;|&nbsp;/gi, "");
+                console.log(description);
                 const city = item.location.name;
                 // .toLowerCase()
                 // .trim()

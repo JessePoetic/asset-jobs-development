@@ -234,7 +234,7 @@ class Pagination extends React.Component {
                 </div>
               </div>
               <div className="job-filter-section last-child">
-                <div className="heading-6">Refine by city</div>
+                <div className="heading-6">Refine by location</div>
                 <div className="filter-checkboxes w-form">
                   {cities.map((city) => {
                     return (
@@ -311,8 +311,14 @@ class Item extends React.Component {
     return (
       <React.Fragment>
         {data.map((item) => {
-          const description = item.content
-            .slice(1032) // temporary - should use regex to get rid of introductory content
+          const content = _.unescape(item.content);
+          const index = content.indexOf("</strong>");
+          const index2 = content.indexOf("</strong>", index + 1); // Find paragraph after second bolded heading
+          const start = content.indexOf("<p>", index2 + 1);
+          const end = content.indexOf("</p>", start);
+          // Might be better to use regex
+          const description = content
+            .slice(start, end)
             .replace(/<[^>]+>/g, "")
             .replace(/; &nbsp;|&nbsp;/gi, "");
           const city = item.location.name;
@@ -343,7 +349,7 @@ class Item extends React.Component {
           const applySection = document.createElement("div");
           const JobModalHeader = document.createElement("div");
           JobModalHeader.innerHTML = `
-            <h1>${item.title}</h1>
+            <h2>${item.title}</h2>
             <div class="location">Location: ${item.location.name}</div>
           `;
 
