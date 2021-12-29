@@ -351,6 +351,7 @@ class Item extends React.Component {
           JobModalHeader.innerHTML = `
             <h2>${item.title}</h2>
             <div class="location">Location: ${item.location.name}</div>
+            <br>
           `;
 
           // const applySection =
