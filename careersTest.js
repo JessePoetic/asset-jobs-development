@@ -321,9 +321,9 @@ class Item extends React.Component {
             .slice(start, end)
             .replace(/<[^>]+>/g, "")
             .replace(/; &nbsp;|&nbsp;/gi, "");
-          const city = item.location.name;
-          // .toLowerCase()
-          // .trim()
+          const city = item.location.name
+            // .toLowerCase()
+            .trim();
           // .replace(/\b\w/g, (l) => _.capitalize(l));
           const title = item.title
             .toLowerCase()
@@ -490,9 +490,10 @@ class App extends React.Component {
     const cities = _.sortBy(
       _.uniq(
         this.allJobListings.map(
-          ({ location }) => location.name
-          // .toLowerCase()
-          // .trim()
+          ({ location }) =>
+            location.name
+              // .toLowerCase()
+              .trim()
           // .replace(/\b\w/g, (l) => _.capitalize(l))
         )
       )
@@ -541,9 +542,9 @@ class App extends React.Component {
       // });
 
       const filteredByCities = this.allJobListings.filter(({ location }) => {
-        const cityNormalized = location.name;
-        // .toLowerCase()
-        // .trim()
+        const cityNormalized = location.name
+          // .toLowerCase()
+          .trim();
         // .replace(/\b\w/g, (l) => _.capitalize(l));
 
         if (selectedCities.length) {

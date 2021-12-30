@@ -328,19 +328,19 @@
             <React.Fragment>
               {data.map((item) => {
                 const content = _.unescape(item.content);
-                const index = content.indexOf('</strong>')
-                const index2 = content.indexOf('</strong>', index + 1)
-                const start = content.indexOf('<p>', index2 + 1);
-                const end = content.indexOf('</p>', start)
+                const index = content.indexOf("</strong>");
+                const index2 = content.indexOf("</strong>", index + 1);
+                const start = content.indexOf("<p>", index2 + 1);
+                const end = content.indexOf("</p>", start);
                 // Might be better to use regex
                 const description = content
                   .slice(start, end)
                   .replace(/<[^>]+>/g, "")
                   .replace(/; &nbsp;|&nbsp;/gi, "");
                 console.log(description);
-                const city = item.location.name;
-                // .toLowerCase()
-                // .trim()
+                const city = item.location.name
+                  // .toLowerCase()
+                  .trim();
                 // .replace(/\b\w/g, (l) => _.capitalize(l));
                 const title = item.title
                   .toLowerCase()
@@ -510,9 +510,10 @@
           const cities = _.sortBy(
             _.uniq(
               this.allJobListings.map(
-                ({ location }) => location.name
-                // .toLowerCase()
-                // .trim()
+                ({ location }) =>
+                  location.name
+                    // .toLowerCase()
+                    .trim()
                 // .replace(/\b\w/g, (l) => _.capitalize(l))
               )
             )
@@ -563,9 +564,9 @@
 
             const filteredByCities = this.allJobListings.filter(
               ({ location }) => {
-                const cityNormalized = location.name;
+                const cityNormalized = location.name
                 // .toLowerCase()
-                // .trim()
+                .trim()
                 // .replace(/\b\w/g, (l) => _.capitalize(l));
 
                 if (selectedCities.length) {
